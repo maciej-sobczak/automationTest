@@ -1,4 +1,4 @@
-import { selectors, defaultImageDimensions } from './config';
+import { selectors, defaultImageDimensions, resizedDimensions } from './config';
 
 const WIDTH = 'width';
 const HEIGHT = 'height';
@@ -96,4 +96,30 @@ export function assertImageIsZoomedOutDropdown() {
 
 export function assertImageIsZoomedInDropdown() {
     assertElementIsZoomed(selectors.zoomDropdown125percent);
+}
+
+function checkResizedDimension(hasUnlockedAspectRatio) {
+    cy.get(selectors.canvas).should('have.css', WIDTH, `${resizedDimensions.width}px`);
+    cy.get(selectors.canvas).should(
+        'have.css',
+        HEIGHT,
+        `${hasUnlockedAspectRatio ? defaultImageDimensions.height : resizedDimensions.height}px`,
+    );
+}
+
+export function assertImageIsResized(isPercentage, hasUnlockedAspectRatio) {
+    cy.get(selectors.resizeSectionButton).click();
+
+    if (hasUnlockedAspectRatio) {
+        cy.get(selectors.resizeLockAspectRatio).click();
+    }
+
+    if (isPercentage) {
+        cy.get(selectors.resizePercentageCheckbox).click();
+    }
+    cy.get(selectors.resizeWidthBox)
+        .clear()
+        .type(isPercentage ? '7' : '70');
+    cy.get(selectors.resizeApplyButton).click();
+    checkResizedDimension(hasUnlockedAspectRatio);
 }

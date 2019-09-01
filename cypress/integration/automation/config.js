@@ -7,9 +7,24 @@ export const selectors = {
     zoomDropdownMenu: '.c-canvas-status__right > .btn-group > .btn > span',
     zoomDropdown50percent: '.c-canvas-status__right > .btn-group > .dropdown-menu > :nth-child(3)',
     zoomDropdown125percent: '.c-canvas-status__right > .btn-group > .dropdown-menu > :nth-child(6)',
+    resizeSectionButton:
+        '.c-edit__edit-resize > .panel > .panel-heading > .panel-title > .c-edit__item-name',
+    resizeWidthBox:
+        '#collapse-editresize > .c-edit__body > .c-edit-corp > .c-width-height > .c-width-height__size-width',
+    resizeHeightBox:
+        '#collapse-editresize > .c-edit__body > .c-edit-corp > .c-width-height > .c-width-height__size-height',
+    resizePercentageCheckbox: '#collapse-editresize > .c-edit__body > .c-edit-corp > .c-keep > .btn',
+    resizeLockAspectRatio:
+        '#collapse-editresize > .c-edit__body > .c-edit-corp > .c-width-height > .btn',
+    resizeApplyButton: '#collapse-editresize > .c-edit__body > .c-edit__cancel-apply > .u-apply-btn',
 };
 
 export const defaultImageDimensions = {
     width: 1000,
     height: 666,
+};
+
+export const resizedDimensions = {
+    width: 170,
+    height: 113,
 };
