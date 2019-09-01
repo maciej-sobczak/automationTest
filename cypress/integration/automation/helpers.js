@@ -1,4 +1,4 @@
-import { selectors, defaultImageDimensions, resizedDimensions } from './config';
+import { selectors, dimensions } from './config';
 
 const WIDTH = 'width';
 const HEIGHT = 'height';
@@ -33,15 +33,15 @@ function assertImageIsNotCropped(zoomSelector) {
 }
 
 function assertDefaultImageDimensions() {
-    cy.get(selectors.canvas).should('have.css', WIDTH, `${defaultImageDimensions.width}px`);
-    cy.get(selectors.canvas).should('have.css', HEIGHT, `${defaultImageDimensions.height}px`);
+    cy.get(selectors.canvas).should('have.css', WIDTH, `${dimensions.default.width}px`);
+    cy.get(selectors.canvas).should('have.css', HEIGHT, `${dimensions.default.height}px`);
 }
 
 function recalculateImageDimensions(isDropdown, isZoomedOut) {
     const zoomParameter = isDropdown ? (isZoomedOut ? 0.5 : 1.25) : isZoomedOut ? 0.9 : 1.1;
     const recalculatedImageDimensions = {
-        width: (defaultImageDimensions.width * zoomParameter).toFixed(0),
-        height: (defaultImageDimensions.height * zoomParameter).toFixed(0),
+        width: (dimensions.default.width * zoomParameter).toFixed(0),
+        height: (dimensions.default.height * zoomParameter).toFixed(0),
     };
 
     return recalculatedImageDimensions;
@@ -99,11 +99,11 @@ export function assertImageIsZoomedInDropdown() {
 }
 
 function checkResizedDimension(hasUnlockedAspectRatio) {
-    cy.get(selectors.canvas).should('have.css', WIDTH, `${resizedDimensions.width}px`);
+    cy.get(selectors.canvas).should('have.css', WIDTH, `${dimensions.resized.width}px`);
     cy.get(selectors.canvas).should(
         'have.css',
         HEIGHT,
-        `${hasUnlockedAspectRatio ? defaultImageDimensions.height : resizedDimensions.height}px`,
+        `${hasUnlockedAspectRatio ? dimensions.default.height : dimensions.resized.height}px`,
     );
 }
 
@@ -122,4 +122,41 @@ export function assertImageIsResized(isPercentage, hasUnlockedAspectRatio) {
         .type(isPercentage ? '7' : '70');
     cy.get(selectors.resizeApplyButton).click();
     checkResizedDimension(hasUnlockedAspectRatio);
+}
+
+function checkCroppedDimension(hasCustomParameters) {
+    cy.get(selectors.canvas).should(
+        'have.css',
+        WIDTH,
+        `${hasCustomParameters ? dimensions.croppedCustom.width : dimensions.croppedDefault.width}px`,
+    );
+    cy.get(selectors.canvas).should(
+        'have.css',
+        HEIGHT,
+        `${hasCustomParameters ? dimensions.croppedCustom.height : dimensions.croppedDefault.height}px`,
+    );
+}
+
+export function assertImageIsCropped(hasCustomParameters, hasLockedAspectRatio) {
+    cy.get(selectors.cropSectionButton).click();
+
+    if (hasCustomParameters && !hasLockedAspectRatio) {
+        cy.get(selectors.cropWidthBox)
+            .clear()
+            .type('50');
+        cy.get(selectors.cropHeightBox)
+            .clear()
+            .type('00');
+    }
+
+    if (hasLockedAspectRatio) {
+        cy.get(selectors.cropLockAspectRatio).click();
+        cy.get(selectors.cropWidthBox)
+            .clear()
+            .type('50');
+    }
+
+    cy.get(selectors.cropApplyButton).click();
+
+    checkCroppedDimension(hasCustomParameters);
 }

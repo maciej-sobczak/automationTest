@@ -1,7 +1,7 @@
 import { selectors } from './config';
 import { assertImageIsResized, prepareView } from './helpers';
 
-describe('Zoom function test', () => {
+describe('Resize function test', () => {
     it('Navigates to fotojet website', () => {
         cy.visit('https://www.fotojet.com/');
     });
